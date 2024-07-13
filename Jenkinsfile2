@@ -1,14 +1,24 @@
 pipeline {
     agent any
-    environment {
-        MAVEN_HOME = "C:\\Program Files\\apache-maven-3.9.8"
-        PATH = "${MAVEN_HOME}\\bin;${env.PATH}"
+    tools {
+        maven 'maven-3.9.8' // Jenkins'teki Maven kurulum adını buraya yazın
+        jdk 'jdk-17' // Jenkins'teki JDK kurulum adını buraya yazın
     }
     stages {
+        stage('Checkout') {
+            steps {
+                // GitHub'dan kaynak kodunu klonlayın
+                git url: 'https://github.com/emaozdemir/jenkins-maven-project.git', branch: 'main'
+            }
+        }
         stage('Build') {
             steps {
-                // Maven package komutunu çalıştırın
-                bat 'mvn clean package'
+                script {
+                    // Maven home'u tanımlayın
+                    def mvnHome = tool name: 'maven-3.9.8', type: 'maven'
+                    // Maven package komutunu çalıştırın
+                    bat "${mvnHome}/bin/mvn clean package"
+                }
             }
         }
     }
