@@ -1,22 +1,18 @@
 pipeline {
     agent any
-    tools { 
-        maven 'Maven 3.9.8' 
-        jdk 'jdk21' 
+    tools {
+        maven 'mvn' // Adjust to the correct name if different
+        jdk 'JDK' // Adjust to the correct name if different
     }
     stages {
-        stage ('Initialize') {
+        stage('Build') {
             steps {
-              bat '''
-                    echo "PATH = ${PATH}"
-                    echo "M2_HOME = ${M2_HOME}"
-                ''' 
-            }
-        }
-
-        stage ('Build') {
-            steps {
-                echo 'This is a minimal pipeline.'
+                script {
+                    // Define the Maven home based on the configured Maven installation
+                    def mvnHome = tool name: 'mvn', type: 'maven'
+                    // Run the Maven package command
+                    bat "${mvnHome}/bin/mvn package"
+                }
             }
         }
     }
