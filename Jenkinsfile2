@@ -1,19 +1,14 @@
 pipeline {
     agent any
-    tools {
-        maven 'Maven 3.9.8' // Use the exact configured name for Maven
-        jdk 'jdk17' // Use the exact configured name for JDK
+    environment {
+        MAVEN_HOME = "C:\\Program Files\\apache-maven-3.9.8"
+        PATH = "${MAVEN_HOME}\\bin;${env.PATH}"
     }
     stages {
         stage('Build') {
             steps {
-                script {
-                    // Define the Maven home based on the configured Maven installation
-                    def mvnHome = tool name: 'Maven 3.9.8', type: 'maven'
-
-                    // Run the Maven package command
-                   bat "C:\Program Files\apache-maven-3.9.8\bin"
-                }
+                // Maven package komutunu çalıştırın
+                bat 'mvn clean package'
             }
         }
     }
