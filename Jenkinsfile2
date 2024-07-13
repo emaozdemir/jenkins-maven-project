@@ -1,7 +1,7 @@
 pipeline {
     agent any
     tools {
-        maven 'Maven 3.8.6' // Use the exact configured name for Maven
+        maven 'Maven 3.9.8' // Use the exact configured name for Maven
         jdk 'jdk17' // Use the exact configured name for JDK
     }
     stages {
@@ -9,9 +9,10 @@ pipeline {
             steps {
                 script {
                     // Define the Maven home based on the configured Maven installation
-                    def mvnHome = tool name: 'Maven 3.8.6', type: 'maven'
+                    def mvnHome = tool name: 'Maven 3.9.8', type: 'maven'
+
                     // Run the Maven package command
-                   bat "${mvnHome}/bin/mvn package"
+                   bat "C:\Program Files\apache-maven-3.9.8\bin"
                 }
             }
         }
