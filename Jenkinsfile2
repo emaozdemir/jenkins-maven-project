@@ -1,23 +1,31 @@
 pipeline {
     agent any
     tools {
-        maven 'maven-3.9.8' // Jenkins'teki Maven kurulum adını buraya yazın
-        jdk 'jdk-17' // Jenkins'teki JDK kurulum adını buraya yazın
+        maven 'mvn' // Maven'in Jenkins'te "mvn" olarak tanımlandığını varsayıyoruz
     }
     stages {
-        stage('Checkout') {
-            steps {
-                // GitHub'dan kaynak kodunu klonlayın
-                git url: 'https://github.com/emaozdemir/jenkins-maven-project.git', branch: 'main'
-            }
-        }
         stage('Build') {
             steps {
                 script {
-                    // Maven home'u tanımlayın
-                    def mvnHome = tool name: 'maven-3.9.8', type: 'maven'
-                    // Maven package komutunu çalıştırın
-                    bat "${mvnHome}/bin/mvn clean package"
+                    def mvnHome = tool name: 'mvn', type: 'maven'
+                    env.PATH = "${mvnHome}\\bin;${env.PATH}"
+                }
+                bat 'mvn -f hello-app/pom.xml -B -DskipTests clean package'
+            }
+            post {
+                success {
+                    echo "Now Archiving the Artifacts....."
+                    archiveArtifacts artifacts: '**/*.jar'
+                }
+            }
+        }
+        stage('Test') {
+            steps {
+                bat 'mvn -f hello-app/pom.xml test'
+            }
+            post {
+                always {
+                    junit 'hello-app/target/surefire-reports/*.xml'
                 }
             }
         }
